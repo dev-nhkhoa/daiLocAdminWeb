@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+table, th, td, tr{
+  text-align: center;
+  border: 2px solid black;
+}
+
+#loiNhuan-gain {
+  background-color: green;
+  color: white;
+}
+
+#loiNhuan-loss {
+  background-color: red;
+  color: white;
+}

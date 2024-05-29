@@ -1,0 +1,22 @@
+{
+  "tableHeaderRow": [
+    { "id": "stt", "name": "STT", "size": 40 },
+    { "id": "tenHangHoa", "name": "Tên Hàng Hóa", "size": 600 },
+    { "id": "donVi", "name": "Đơn Vị", "size": 50 },
+    { "id": "soLuong", "name": "Số Lượng", "size": 40 },
+    { "id": "giaNhap", "name": "Giá Nhập" },
+    { "id": "giaBan", "name": "Giá Bán" },
+    { "id": "thanhTienNhapHang", "name": "Thành Tiền Giá Nhập" },
+    { "id": "thanhTienBanHang", "name": "Thành Tiền Giá Bán" },
+    { "id": "loiNhuan", "name": "Lợi Nhuận" },
+    { "id": "ghiChu", "name": "Ghi Chú" }
+  ],
+  "tableMainRow": [
+    { "id": "stt", "name": "STT", "size": 40 },
+    { "id": "tenKhachHang", "name": "Tên Khách Hàng", "size": 300 },
+    { "id": "soDienThoai", "name": "Số Điện Thoại", "size": 100 },
+    { "id": "diaChi", "name": "Địa Chỉ Công Trình", "size": 400 },
+    { "id": "ngayTaoDon", "name": "Ngày Tạo", "size": 100 },
+    { "id": "thanhToan", "name": "Tình Trạng Thanh Toán", "size": 100 }
+  ]
+}
