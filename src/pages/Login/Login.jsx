@@ -1,14 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useAuth } from '#/hooks/useAuth'
 
 const Login = () => {
-  const navigate = useNavigate();
+  const { login } = useAuth()
 
   function handleAdminLogin(e) {
-    e.preventDefault();
-
-    // TODO: HANDLE ADMIN LOGIN
-    // login success
-    navigate("/");
+    e.preventDefault()
+    login('admin')
+    console.log('test')
   }
 
   return (
@@ -19,31 +17,20 @@ const Login = () => {
         {/* username */}
         <div className="flex w-[300px] items-center justify-between">
           <h5>Tài khoản</h5>
-          <input
-            className="rounded-md border-2 border-solid border-black"
-            type="text"
-            placeholder="tài khoản"
-          />
+          <input className="rounded-md border-2 border-solid border-black" type="text" placeholder="tài khoản" />
         </div>
         {/* password */}
         <div className="flex w-[300px] items-center justify-between">
           <h5>Mật khẩu</h5>
-          <input
-            className="rounded-md border-2 border-solid border-black"
-            type="password"
-            placeholder="mật khẩu"
-          />
+          <input className="rounded-md border-2 border-solid border-black" type="password" placeholder="mật khẩu" />
         </div>
         {/* login button */}
-        <button
-          type="submit"
-          className="rounded-md bg-slate-600 font-mono text-white"
-        >
+        <button type="submit" className="rounded-md bg-slate-600 font-mono text-white">
           Đăng nhập
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
