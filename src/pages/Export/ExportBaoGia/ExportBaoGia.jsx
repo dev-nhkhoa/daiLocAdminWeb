@@ -5,15 +5,19 @@ import { getDateArr } from '#/lib/handleThings'
 import logo from '../../../../asset/images/logo.png'
 
 import '#/index.css'
-import { getDonHang } from '#/lib/zustand/ListDonHangStore'
+import useDonHangStore from '#/hooks/useDonHangStore'
 
 const ExportBaoGia = () => {
   const { donHangId } = useParams()
-  const donHangLoader = getDonHang(donHangId)
+
+  const { listDonHang } = useDonHangStore()
+  const donHangLoader = JSON.parse(localStorage.getItem(`donHang-${donHangId}`))
+
+  console.log(donHangLoader.listSanPham)
 
   const date = getDateArr()
   const navigate = useNavigate()
-  const totalDonHang = donHangLoader.listSanPham.reduce((acc, sanPham) => acc + sanPham.thanhTienBanHang * sanPham.soLuong, 0)
+  const totalDonHang = donHangLoader.listSanPham.reduce((acc, sanPham) => acc + sanPham.giaBan * sanPham.soLuong, 0)
 
   return (
     <div className="m-3 flex flex-col items-center justify-center">
@@ -63,9 +67,9 @@ const ExportBaoGia = () => {
                 <td>{index + 1}</td>
                 <td style={{ textAlign: 'left' }}>{sanPham.tenHangHoa}</td>
                 <td>{sanPham.donVi}</td>
-                <td>{formatCurrency(sanPham.donGiaBanHang)}</td>
+                <td>{formatCurrency(sanPham.giaBan)}</td>
                 <td>{sanPham.soLuong}</td>
-                <td>{formatCurrency(sanPham.thanhTienBanHang * sanPham.soLuong)}</td>
+                <td>{formatCurrency(sanPham.giaBan * sanPham.soLuong)}</td>
                 <td>{sanPham.ghiChu}</td>
               </tr>
             ))}

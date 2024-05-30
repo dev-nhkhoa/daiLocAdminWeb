@@ -8,7 +8,7 @@ function generateSanPhamTemplate() {
     soLuong: '',
     giaNhap: '',
     giaBan: '',
-    ghiChu: 'tests',
+    ghiChu: '',
   }
 }
 

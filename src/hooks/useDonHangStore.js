@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-const donHangStore = create((set) => ({
+const useDonHangStore = create((set) => ({
   listDonHang: [],
   setListDonHang: (listDonHang) => set({ listDonHang: [...listDonHang] }),
   updateListDonHang: (donHang) => {
@@ -15,15 +15,17 @@ const donHangStore = create((set) => ({
 }))
 
 function getDonHang(id) {
-  const listDonHang = donHangStore((state) => state.listDonHang)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const listDonHang = useDonHangStore((state) => state.listDonHang)
   return listDonHang.find((donHang) => donHang.donHangId === id)
 }
 
 function getLatestDonHangId() {
-  const listDonHang = donHangStore((state) => state.listDonHang)
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const listDonHang = useDonHangStore((state) => state.listDonHang)
 
   return String(listDonHang[listDonHang.length - 1].donHangId).split('-')[1]
 }
 
-export default donHangStore
+export default useDonHangStore
 export { getDonHang, getLatestDonHangId }

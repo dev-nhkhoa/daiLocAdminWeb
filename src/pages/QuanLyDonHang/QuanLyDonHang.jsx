@@ -4,8 +4,8 @@ import { useEffect, useMemo } from 'react'
 import { tableMainRow } from '../../config.json'
 import DefaultColumn from './DefaultColumn'
 import { api } from '#/App'
-import donHangStore from '#/lib/zustand/ListDonHangStore'
 import { generateDonHangTemplate } from '#/lib/generateTemplate'
+import donHangStore from '#/hooks/useDonHangStore'
 
 function QuanLyDonHang() {
   // todo: refactor code
@@ -13,11 +13,7 @@ function QuanLyDonHang() {
   const navigate = useNavigate()
   const columnHelper = createColumnHelper()
 
-  const listDonHang = donHangStore((state) => state.listDonHang)
-  const setListDonHang = donHangStore((state) => state.setListDonHang)
-  const removeDonHang = donHangStore((state) => state.removeDonHang)
-
-  const addDonHang = donHangStore((state) => state.addDonHang)
+  const { listDonHang, setListDonHang, removeDonHang, addDonHang } = donHangStore()
 
   useEffect(() => {
     async function initialDonHang() {

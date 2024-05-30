@@ -11,11 +11,11 @@ import DefaultColumn from './DefaultColumn'
 import { tableHeaderRow } from '../../config.json'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CustomerInput, CustomerText } from './components/CustomerInfo'
-import DonHangButton from './components/DonHangButton'
+import { CustomerInput, CustomerText } from './CustomerInfo'
+import DonHangButton from './DonHangButton'
 import { api } from '#/App'
-import { getDonHang } from '#/lib/zustand/ListDonHangStore'
 import { generateSanPhamTemplate } from '#/lib/generateTemplate'
+import { getDonHang } from '#/hooks/useDonHangStore'
 
 const DonHang = () => {
   // add tính năng tự động lưu đơn hàng khi thay đổi thông tin khách hàng
@@ -31,23 +31,22 @@ const DonHang = () => {
   )
 
   const [listSanPham, setListSanPham] = useState(donHang.listSanPham || [])
-
+  const [isThanhToan, setThanhToan] = useState(donHang.thanhToan || false)
   const sanPhamIds = useMemo(() => listSanPham.map((sanPham) => sanPham.sanPhamId), [listSanPham])
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setListSanPham((oldListSanPham) => oldListSanPham)
-      setDonHang((oldHoaDon) => {
-        const newHoaDon = oldHoaDon
-        newHoaDon.listSanPham = listSanPham
+  window.addEventListener('click', () => {
+    setListSanPham((oldListSanPham) => oldListSanPham)
+    setDonHang((oldHoaDon) => {
+      const newHoaDon = oldHoaDon
+      newHoaDon.listSanPham = listSanPham
 
-        return newHoaDon
-      })
+      return newHoaDon
+    })
 
-      localStorage.setItem(`donHang-${donHangId}`, JSON.stringify(donHang))
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [listSanPham, donHang, donHangId])
+    localStorage.setItem(`donHang-${donHangId}`, JSON.stringify(donHang))
+  })
+
+  useEffect(() => {}, [isThanhToan])
 
   const RowDragHandleCell = ({ rowId }) => {
     const { attributes, listeners } = useSortable({
@@ -188,7 +187,7 @@ const DonHang = () => {
 
   return (
     <DndContext collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis]} onDragEnd={handleDragEnd} sensors={sensors}>
-      <h1 className="text-left font-mono text-2xl font-bold">{'Đơn hàng:'}</h1>
+      <h1 className="text-left font-mono text-2xl font-bold">Đơn hàng:</h1>
       <div className="flex flex-col gap-1">
         <CustomerText title="Ngày Tạo Đơn" data={donHang.ngayTaoDon} />
         <CustomerText title="Mã Đơn Hàng" data={donHang.donHangId} />
@@ -231,12 +230,24 @@ const DonHang = () => {
         <div style={{ display: 'flex', gap: 2 }}>
           <DonHangButton title="Thêm 1 dòng" handleFunction={addNewRow} />
           <DonHangButton title="Lưu đơn hàng" handleFunction={handleSaveDonHang} />
-          <DonHangButton title="Xuất file báo giá" handleFunction={() => navigate(`../export/bao-gia/${donHang.donHangId}`)} />
+          <DonHangButton title="Xuất file báo giá" handleFunction={async () => navigate(`../export/bao-gia/${donHang.donHangId}`)} />
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <DonHangButton title="Xuất file giao hàng" handleFunction={handleSaveDonHang} />
-          <DonHangButton title="Ghi nhận thanh toán" handleFunction={handleSaveDonHang} />
+          <DonHangButton title="Xuất file giao hàng" handleFunction={() => navigate(`../export/giao-hang/${donHang.donHangId}`)} />
+          <DonHangButton
+            title="Ghi nhận thanh toán"
+            handleFunction={() => {
+              setThanhToan(true)
+              setDonHang((oldHoaDon) => {
+                const newHoaDon = oldHoaDon
+                newHoaDon.thanhToan = true
+
+                return newHoaDon
+              })
+              alert('Đã ghi nhận thanh toán')
+            }}
+          />
         </div>
       </div>
     </DndContext>
