@@ -7,11 +7,11 @@ import { backendURL } from '../package.json'
 //pages
 import { AuthProvider } from './hooks/useAuth'
 import { ProtectedRoute } from './components/ProtectedRoute.jsx'
-import Dashboard from './pages/dashboard/Dashboard'
-import QuanLyDonHang from './pages/quan-ly-don-hang/QuanLyDonHang'
-import DonHang from './pages/don-hang/DonHang'
-import Login from './pages/login/Login'
-import PageTemplate from './components/PageTemplate'
+import Dashboard from '#/pages/dashboard/Dashboard'
+import QuanLyDonHang from '#/pages/quan-ly-don-hang/QuanLyDonHang'
+import DonHang from '#/pages/don-hang/DonHang'
+import Login from '#/pages/login/Login'
+import PageTemplate from '#/components/PageTemplate'
 
 export const api = axios.create({ baseURL: backendURL })
 
