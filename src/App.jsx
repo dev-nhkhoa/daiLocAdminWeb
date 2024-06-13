@@ -1,56 +1,42 @@
+import axios from 'axios'
 import ReactDOM from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 //pages
-import Dashboard from './pages/Dashboard/Dashboard'
-import Login from './pages/Login/Login'
-import QuanLyDonHang from './pages/QuanLyDonHang/QuanLyDonHang'
-import DonHang from './pages/DonHang/DonHang'
-import ExportBaoGia from './pages/Export/ExportBaoGia/ExportBaoGia'
-
+import Dashboard from './pages/dashboard/Dashboard'
+import Login from './pages/login/Login'
 import PageTemplate from './components/PageTemplate'
-import axios from 'axios'
-import Initial from './components/Initial'
+import { AuthProvider } from './hooks/useAuth'
+import { ProtectedRoute } from './components/ProtectedRoute.jsx'
+import DonHang from './pages/don-hang/DonHang'
+import QuanLyDonHang from './pages/quan-ly-don-hang/QuanLyDonHang'
 
 export const api = axios.create({ baseURL: 'http://localhost:3000/api/v1/' })
 
-const router = createBrowserRouter([
-  {
-    id: 'root',
-    path: '/',
-    element: <PageTemplate body={<Dashboard />} />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/dashboard',
-    element: <PageTemplate body={<Dashboard />} />,
-  },
-  {
-    path: '/quan-ly-don-hang',
-    element: <PageTemplate body={<QuanLyDonHang />} />,
-  },
-  {
-    path: '/quan-ly-don-hang/don-hang/:donHangId',
-    element: <PageTemplate body={<DonHang />} />,
-  },
-  {
-    path: '/don-hang/tao-don-moi',
-    element: <PageTemplate body={<DonHang taoDonMoi />} />,
-  },
-  {
-    path: '/export/bao-gia/:donHangId',
-    element: <ExportBaoGia />,
-  },
-  {
-    path: '/export/giao-hang/:donHangId',
-  },
-])
+const listProtectedComponent = [
+  { path: '/dashboard', element: <Dashboard /> },
+  { path: '/quan-ly-don-hang', element: <QuanLyDonHang /> },
+  { path: 'quan-ly-don-hang/don-hang/:donHangId', element: <DonHang /> },
+]
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <Initial>
-    <RouterProvider router={router} />
-  </Initial>
+  <BrowserRouter>
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        {listProtectedComponent.map((item, index) => (
+          <Route
+            key={index}
+            path={item.path}
+            element={
+              <ProtectedRoute>
+                <PageTemplate body={item.element} />
+              </ProtectedRoute>
+            }
+          />
+        ))}
+      </Routes>
+    </AuthProvider>
+  </BrowserRouter>
 )
