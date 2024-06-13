@@ -3,7 +3,7 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
-  "backendURL": "http://dailocadminserver.onrender.com/api/v1",
+  "backendURL": "https://dailocadminserver.onrender.com/api/v1",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
