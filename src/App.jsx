@@ -1,8 +1,5 @@
-import axios from 'axios'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
-import { backendURL } from '../package.json'
 
 //pages
 import { AuthProvider } from './hooks/useAuth'
@@ -12,8 +9,6 @@ import QuanLyDonHang from '#/pages/QuanLyDonHang/QuanLyDonHang'
 import DonHang from '#/pages/DonHang/DonHang'
 import Login from '#/pages/Login/Login'
 import PageTemplate from '#/components/PageTemplate'
-
-export const api = axios.create({ baseURL: backendURL })
 
 const listProtectedComponent = [
   { path: '/dashboard', element: <Dashboard /> },

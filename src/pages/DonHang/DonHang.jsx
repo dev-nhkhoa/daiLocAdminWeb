@@ -13,9 +13,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { CustomerInput, CustomerText } from './CustomerInfo'
 import DonHangButton from './DonHangButton'
-import { api } from '#/App'
 import { generateSanPhamTemplate } from '#/lib/generateTemplate'
 import { getDonHang } from '#/hooks/useDonHangStore'
+import { api } from '#/hooks/useAuth'
 
 const DonHang = () => {
   // add tính năng tự động lưu đơn hàng khi thay đổi thông tin khách hàng

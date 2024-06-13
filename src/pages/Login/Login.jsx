@@ -1,5 +1,4 @@
-import { api } from '#/App'
-import { useAuth } from '#/hooks/useAuth'
+import { api, useAuth } from '#/hooks/useAuth'
 import { useState } from 'react'
 
 const Login = () => {

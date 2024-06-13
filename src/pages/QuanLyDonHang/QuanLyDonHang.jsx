@@ -3,9 +3,9 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '
 import { useEffect, useMemo } from 'react'
 import { tableMainRow } from '../../config.json'
 import DefaultColumn from './DefaultColumn'
-import { api } from '#/App'
 import { generateDonHangTemplate } from '#/lib/generateTemplate'
 import donHangStore from '#/hooks/useDonHangStore'
+import { api } from '#/hooks/useAuth'
 
 function QuanLyDonHang() {
   // todo: refactor code
