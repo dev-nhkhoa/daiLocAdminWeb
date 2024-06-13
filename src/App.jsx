@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<PageTemplate body={<Dashboard />} />} />
         <Route path="/login" element={<Login />} />
         {listProtectedComponent.map((item, index) => (
           <Route

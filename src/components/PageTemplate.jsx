@@ -1,8 +1,6 @@
 import Footer from './Footer/Footer'
 import Navbar from './Navbar/Navbar'
 
-import PropTypes from 'prop-types'
-
 import '../index.css'
 
 const PageTemplate = ({ body }) => {
@@ -19,10 +17,6 @@ const PageTemplate = ({ body }) => {
       </div>
     </div>
   )
-}
-
-PageTemplate.propTypes = {
-  body: PropTypes.node.isRequired,
 }
 
 export default PageTemplate
