@@ -7,7 +7,7 @@ import { backendURL } from '../package.json'
 //pages
 import { AuthProvider } from './hooks/useAuth'
 import { ProtectedRoute } from './components/ProtectedRoute.jsx'
-import Dashboard from '#/pages/dashboard/Dashboard'
+import Dashboard from '#/pages/Dashboard/Dashboard'
 import QuanLyDonHang from '#/pages/quan-ly-don-hang/QuanLyDonHang'
 import DonHang from '#/pages/don-hang/DonHang'
 import Login from '#/pages/login/Login'
