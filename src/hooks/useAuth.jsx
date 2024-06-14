@@ -3,12 +3,11 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocalStorage } from './useLocalStorage'
 import axios from 'axios'
-import { backendURL } from '../../package.json'
 
 const AuthContext = createContext()
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const api = axios.create({ baseURL: backendURL })
+export const api = axios.create({ baseURL: import.meta.env.VITE_BACKEND_URL })
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()

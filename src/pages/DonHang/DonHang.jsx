@@ -53,9 +53,24 @@ const DonHang = () => {
       id: rowId,
     })
     return (
-      <button {...attributes} {...listeners} style={{ border: 'hidden', backgroundColor: '#ffffff' }}>
-        🟰
-      </button>
+      <div className="flex gap-3">
+        <button {...attributes} {...listeners} style={{ border: 'hidden', backgroundColor: '#ffffff' }}>
+          🟰
+        </button>
+        <button
+          onClick={() => {
+            setListSanPham((oldListSanPham) => oldListSanPham.filter((item) => item.sanPhamId !== rowId))
+            setDonHang((oldHoaDon) => {
+              const newHoaDon = oldHoaDon
+              newHoaDon.listSanPham = listSanPham
+
+              return newHoaDon
+            })
+          }}
+        >
+          Xóa
+        </button>
+      </div>
     )
   }
   // Row Component
@@ -185,6 +200,24 @@ const DonHang = () => {
     },
   })
 
+  function calculateTotal(listSanPham) {
+    const thanhTienBanHang = listSanPham.reduce((total, sanPham) => {
+      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(sanPham.giaBan) * parseFloat(sanPham.soLuong)
+    }, 0)
+
+    const thanhTienNhapHang = listSanPham.reduce((total, sanPham) => {
+      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(sanPham.giaNhap) * parseFloat(sanPham.soLuong)
+    }, 0)
+
+    const loiNhuan = parseFloat(thanhTienBanHang) - parseFloat(thanhTienNhapHang)
+
+    return { thanhTienBanHang, thanhTienNhapHang, loiNhuan }
+  }
+
+  const { thanhTienBanHang, thanhTienNhapHang, loiNhuan } = calculateTotal(listSanPham)
+
+  console.log(listSanPham)
+
   return (
     <DndContext collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis]} onDragEnd={handleDragEnd} sensors={sensors}>
       <h1 className="text-left font-mono text-2xl font-bold">Đơn hàng:</h1>
@@ -216,6 +249,19 @@ const DonHang = () => {
               ))}
             </SortableContext>
           </tbody>
+          <tfoot>
+            <tr>
+              <th colSpan={7} className="text-left font-bold text-red-500">
+                Tổng cộng:
+              </th>
+
+              <th>{thanhTienNhapHang.toLocaleString()}</th>
+              <th>{thanhTienBanHang.toLocaleString()}</th>
+              <th>{loiNhuan.toLocaleString()}</th>
+
+              {/* Tổng thành tiền giá nhập */}
+            </tr>
+          </tfoot>
         </table>
       </div>
 
