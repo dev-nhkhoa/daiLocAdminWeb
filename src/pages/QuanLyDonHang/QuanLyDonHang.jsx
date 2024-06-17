@@ -11,7 +11,7 @@ function QuanLyDonHang() {
   // todo: refactor code
   // public to github
   const navigate = useNavigate()
-  const columnHelper = createColumnHelper()
+  const columnHelper = useMemo(() => createColumnHelper(), [])
 
   const { listDonHang, setListDonHang, removeDonHang, addDonHang } = donHangStore()
 

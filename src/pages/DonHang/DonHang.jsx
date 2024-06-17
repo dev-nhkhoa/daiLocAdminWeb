@@ -1,114 +1,60 @@
-/* eslint-disable react/prop-types */
-import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { useEffect, useMemo, useState } from 'react'
 
-import { useState, useMemo, useCallback, useEffect } from 'react'
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { closestCenter, DndContext, KeyboardSensor, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core'
-
-import { CSS } from '@dnd-kit/utilities'
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
-import DefaultColumn from './DefaultColumn'
-import { tableHeaderRow } from '../../config.json'
 import { useNavigate, useParams } from 'react-router-dom'
-
-import { CustomerInput, CustomerText } from './CustomerInfo'
 import DonHangButton from './DonHangButton'
 import { generateSanPhamTemplate } from '#/lib/generateTemplate'
-import { getDonHang } from '#/hooks/useDonHangStore'
+import useDonHangStore, { getDonHang } from '#/hooks/useDonHangStore'
 import { api } from '#/hooks/useAuth'
+import Table from './Table'
+import CustomerInfo from './CustomerInfo'
 
 const DonHang = () => {
-  // add tính năng tự động lưu đơn hàng khi thay đổi thông tin khách hàng
   const { donHangId } = useParams()
   const navigate = useNavigate()
 
-  const [donHang, setDonHang] = useState(
-    localStorage.getItem(`donHang-${donHangId}`)
+  const { updateListDonHang } = useDonHangStore()
+
+  const donHang = useMemo(() => {
+    return localStorage.getItem(`donHang-${donHangId}`)
       ? JSON.parse(localStorage.getItem(`donHang-${donHangId}`)).donHangId === donHangId
         ? JSON.parse(localStorage.getItem(`donHang-${donHangId}`))
         : getDonHang(donHangId)
       : getDonHang(donHangId)
-  )
+  }, [donHangId])
 
-  const [listSanPham, setListSanPham] = useState(donHang.listSanPham || [])
+  const [customerName, setCustomerName] = useState(donHang.tenKhachHang || '')
+  const [customerPhone, setCustomerPhone] = useState(donHang.soDienThoai || '')
+  const [customerAddress, setCustomerAddress] = useState(donHang.diaChi || '')
+  const [createdDate, setCreatedDate] = useState(donHang.ngayTaoDon || '')
   const [isThanhToan, setThanhToan] = useState(donHang.thanhToan || false)
-  const sanPhamIds = useMemo(() => listSanPham.map((sanPham) => sanPham.sanPhamId), [listSanPham])
+  const [listSanPham, setListSanPham] = useState(donHang.listSanPham || [])
 
-  window.addEventListener('click', () => {
-    setListSanPham((oldListSanPham) => oldListSanPham)
-    setDonHang((oldHoaDon) => {
-      const newHoaDon = oldHoaDon
-      newHoaDon.listSanPham = listSanPham
-
-      return newHoaDon
-    })
-
-    localStorage.setItem(`donHang-${donHangId}`, JSON.stringify(donHang))
-  })
-
-  useEffect(() => {}, [isThanhToan])
-
-  const RowDragHandleCell = ({ rowId }) => {
-    const { attributes, listeners } = useSortable({
-      id: rowId,
-    })
-    return (
-      <div className="flex gap-3">
-        <button {...attributes} {...listeners} style={{ border: 'hidden', backgroundColor: '#ffffff' }}>
-          🟰
-        </button>
-        <button
-          onClick={() => {
-            setListSanPham((oldListSanPham) => oldListSanPham.filter((item) => item.sanPhamId !== rowId))
-            setDonHang((oldHoaDon) => {
-              const newHoaDon = oldHoaDon
-              newHoaDon.listSanPham = listSanPham
-
-              return newHoaDon
-            })
-          }}
-        >
-          Xóa
-        </button>
-      </div>
-    )
-  }
-  // Row Component
-  const DraggableRow = ({ row }) => {
-    const { transform, transition, setNodeRef, isDragging } = useSortable({
-      id: row.original.sanPhamId,
-    })
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition: transition,
-      opacity: isDragging ? 0.8 : 1,
-      zIndex: isDragging ? 1 : 0,
-      position: 'relative',
+  useEffect(() => {
+    const newDonHang = {
+      ...donHang,
+      tenKhachHang: customerName,
+      soDienThoai: customerPhone,
+      diaChi: customerAddress,
+      ngayTaoDon: createdDate,
+      thanhToan: isThanhToan,
+      listSanPham: listSanPham,
     }
-    return (
-      // connect row ref to dnd-kit, apply important styles
-      <tr ref={setNodeRef} style={style}>
-        {row.getVisibleCells().map((cell) => {
-          const cellContext = cell.getContext()
-          return (
-            <td key={cell.id} style={{ width: cell.column.getSize() }}>
-              {flexRender(cell.column.columnDef.cell, cellContext)}
-            </td>
-          )
-        })}
-      </tr>
-    )
-  }
+
+    const intervalId = setInterval(() => {
+      saveData()
+    }, 1000)
+
+    function saveData() {
+      localStorage.setItem(`donHang-${donHangId}`, JSON.stringify(newDonHang))
+      updateListDonHang(newDonHang)
+    }
+
+    return () => clearInterval(intervalId)
+  })
 
   // function handle click buttons
   function addNewRow() {
     setListSanPham((oldListSanPham) => [...oldListSanPham, { ...generateSanPhamTemplate() }])
-    setDonHang((oldHoaDon) => {
-      const newHoaDon = oldHoaDon
-      newHoaDon.listSanPham = listSanPham
-
-      return newHoaDon
-    })
   }
 
   async function handleSaveDonHang() {
@@ -127,142 +73,24 @@ const DonHang = () => {
     localStorage.removeItem(`donHang-${donHangId}`)
   }
 
-  // reorder rows after drag & drop
-  function handleDragEnd(event) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setListSanPham((oldListSanPham) => {
-        const oldIndex = sanPhamIds.indexOf(active.id)
-        const newIndex = sanPhamIds.indexOf(over.id)
-        return arrayMove(oldListSanPham, oldIndex, newIndex)
-      })
-      setDonHang((oldHoaDon) => {
-        const newHoaDon = oldHoaDon
-        newHoaDon.listSanPham = listSanPham
-
-        return newHoaDon
-      })
-    }
-  }
-
-  const sensors = useSensors(useSensor(MouseSensor, {}), useSensor(TouchSensor, {}), useSensor(KeyboardSensor, {}))
-
-  const columnHelper = createColumnHelper()
-
-  const defaultColumn = columnHelper.accessor('', {
-    cell: (props) => <DefaultColumn getValue={props.getValue} row={props.row} column={props.column} table={props.table} />,
-  })
-
-  const newColumns = useCallback(
-    () =>
-      tableHeaderRow.map((header) => {
-        return columnHelper.accessor(header.id, {
-          header: header.name,
-          size: header.size || 100,
-        })
-      }),
-    [columnHelper]
-  )
-
-  const columns = useMemo(
-    () => [
-      {
-        id: 'drag-handle',
-        header: '',
-        cell: ({ row }) => <RowDragHandleCell rowId={row.id} />,
-        size: 30,
-      },
-      ...newColumns(),
-    ],
-    [newColumns]
-  )
-
-  const table = useReactTable({
-    columns: columns,
-    data: listSanPham,
-    defaultColumn: defaultColumn,
-    getRowId: (row) => {
-      return row.sanPhamId
-    },
-    getCoreRowModel: getCoreRowModel(),
-    meta: {
-      updateData: (rowIndex, columnId, value) => {
-        setListSanPham((oldListSanPham) => {
-          return oldListSanPham.map((sanPham, index) => {
-            if (index === rowIndex) {
-              return { ...sanPham, [columnId]: value }
-            } else {
-              return sanPham
-            }
-          })
-        })
-      },
-    },
-  })
-
-  function calculateTotal(listSanPham) {
-    const thanhTienBanHang = listSanPham.reduce((total, sanPham) => {
-      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(sanPham.giaBan) * parseFloat(sanPham.soLuong)
-    }, 0)
-
-    const thanhTienNhapHang = listSanPham.reduce((total, sanPham) => {
-      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(sanPham.giaNhap) * parseFloat(sanPham.soLuong)
-    }, 0)
-
-    const loiNhuan = parseFloat(thanhTienBanHang) - parseFloat(thanhTienNhapHang)
-
-    return { thanhTienBanHang, thanhTienNhapHang, loiNhuan }
-  }
-
-  const { thanhTienBanHang, thanhTienNhapHang, loiNhuan } = calculateTotal(listSanPham)
-
-  console.log(listSanPham)
-
   return (
-    <DndContext collisionDetection={closestCenter} modifiers={[restrictToVerticalAxis]} onDragEnd={handleDragEnd} sensors={sensors}>
+    <>
       <h1 className="text-left font-mono text-2xl font-bold">Đơn hàng:</h1>
       <div className="flex flex-col gap-1">
-        <CustomerText title="Ngày Tạo Đơn" data={donHang.ngayTaoDon} />
-        <CustomerText title="Mã Đơn Hàng" data={donHang.donHangId} />
-        <CustomerText title="Tình Trạng Thanh Toán" data={donHang.thanhToan == true ? 'Đã thanh toán' : 'Chưa thanh toán'} />
-        <CustomerInput title="Tên Khách Hàng" data={donHang.tenKhachHang} input={setDonHang} />
-        <CustomerInput title="Số Điện Thoại" data={donHang.soDienThoai} input={setDonHang} />
-        <CustomerInput title="Địa chỉ công trình" data={donHang.diaChi} input={setDonHang} />
+        <CustomerInfo
+          customerName={customerName}
+          customerPhone={customerPhone}
+          customerAddress={customerAddress}
+          isThanhToan={isThanhToan}
+          donHangId={donHangId}
+          setCustomerName={setCustomerName}
+          setCustomerAddress={setCustomerAddress}
+          setCustomerPhone={setCustomerPhone}
+          createdDate={createdDate}
+        />
       </div>
       <div className="pt-2">
-        <table>
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <th key={header.id} colSpan={header.colSpan}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            <SortableContext items={sanPhamIds} strategy={verticalListSortingStrategy}>
-              {table.getRowModel().rows.map((row) => (
-                <DraggableRow key={row.id} row={row} />
-              ))}
-            </SortableContext>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th colSpan={7} className="text-left font-bold text-red-500">
-                Tổng cộng:
-              </th>
-
-              <th>{thanhTienNhapHang.toLocaleString()}</th>
-              <th>{thanhTienBanHang.toLocaleString()}</th>
-              <th>{loiNhuan.toLocaleString()}</th>
-
-              {/* Tổng thành tiền giá nhập */}
-            </tr>
-          </tfoot>
-        </table>
+        <Table listSanPham={listSanPham} setListSanPham={setListSanPham} />
       </div>
 
       <div
@@ -285,18 +113,12 @@ const DonHang = () => {
             title="Ghi nhận thanh toán"
             handleFunction={() => {
               setThanhToan(true)
-              setDonHang((oldHoaDon) => {
-                const newHoaDon = oldHoaDon
-                newHoaDon.thanhToan = true
-
-                return newHoaDon
-              })
               alert('Đã ghi nhận thanh toán')
             }}
           />
         </div>
       </div>
-    </DndContext>
+    </>
   )
 }
 

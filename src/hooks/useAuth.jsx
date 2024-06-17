@@ -1,12 +1,23 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocalStorage } from './useLocalStorage'
 import axios from 'axios'
+import Dashboard from '#/pages/Dashboard/Dashboard'
+import QuanLyDonHang from '#/pages/QuanLyDonHang/QuanLyDonHang'
+import ExportBaoGia from '#/pages/Export/ExportBaoGia/ExportBaoGia'
+import DonHang from '#/pages/DonHang/DonHang'
+
+export const listProtectedComponent = [
+  { path: '/dashboard', element: <Dashboard /> },
+  { path: '/quan-ly-don-hang', element: <QuanLyDonHang /> },
+  { path: '/export/bao-gia/:donHangId', element: <ExportBaoGia /> },
+  { path: 'quan-ly-don-hang/don-hang/:donHangId', element: <DonHang /> },
+]
 
 const AuthContext = createContext()
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const api = axios.create({ baseURL: import.meta.env.VITE_BACKEND_URL })
 
 export const AuthProvider = ({ children }) => {
@@ -23,7 +34,7 @@ export const AuthProvider = ({ children }) => {
           setWakeUp(true)
         }
       } catch (error) {
-        console.log('API is not running!')
+        alert('API is not running!')
       }
     }
     apiWakeUp()
@@ -49,7 +60,4 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{isWakeUp ? <>{children}</> : <p>Đang kết nối api...</p>}</AuthContext.Provider>
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => {
-  return useContext(AuthContext)
-}
+export const useAuth = () => useContext(AuthContext)
