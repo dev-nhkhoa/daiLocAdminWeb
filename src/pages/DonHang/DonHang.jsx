@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import DonHangButton from './DonHangButton'
 import { generateSanPhamTemplate } from '#/lib/generateTemplate'
-import useDonHangStore, { getDonHang } from '#/hooks/useDonHangStore'
+import useDonHangStore from '#/hooks/useDonHangStore'
 import { api } from '#/hooks/useAuth'
 import Table from './Table'
 import CustomerInfo from './CustomerInfo'
@@ -13,14 +13,15 @@ const DonHang = () => {
   const navigate = useNavigate()
 
   const { updateListDonHang } = useDonHangStore()
+  const listDonHang = useDonHangStore((state) => state.listDonHang)
 
   const donHang = useMemo(() => {
     return localStorage.getItem(`donHang-${donHangId}`)
       ? JSON.parse(localStorage.getItem(`donHang-${donHangId}`)).donHangId === donHangId
         ? JSON.parse(localStorage.getItem(`donHang-${donHangId}`))
-        : getDonHang(donHangId)
-      : getDonHang(donHangId)
-  }, [donHangId])
+        : listDonHang.find((donHang) => donHang.donHangId === donHangId)
+      : listDonHang.find((donHang) => donHang.donHangId === donHangId)
+  }, [donHangId, listDonHang])
 
   const [customerName, setCustomerName] = useState(donHang.tenKhachHang || '')
   const [customerPhone, setCustomerPhone] = useState(donHang.soDienThoai || '')
@@ -38,6 +39,7 @@ const DonHang = () => {
       ngayTaoDon: createdDate,
       thanhToan: isThanhToan,
       listSanPham: listSanPham,
+      createdDate: createdDate,
     }
 
     const intervalId = setInterval(() => {

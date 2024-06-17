@@ -4,8 +4,8 @@ import { useEffect, useMemo } from 'react'
 import { tableMainRow } from '../../config.json'
 import DefaultColumn from './DefaultColumn'
 import { generateDonHangTemplate } from '#/lib/generateTemplate'
-import donHangStore from '#/hooks/useDonHangStore'
 import { api } from '#/hooks/useAuth'
+import useDonHangStore from '#/hooks/useDonHangStore'
 
 function QuanLyDonHang() {
   // todo: refactor code
@@ -13,7 +13,7 @@ function QuanLyDonHang() {
   const navigate = useNavigate()
   const columnHelper = useMemo(() => createColumnHelper(), [])
 
-  const { listDonHang, setListDonHang, removeDonHang, addDonHang } = donHangStore()
+  const { listDonHang, setListDonHang, removeDonHang, addDonHang } = useDonHangStore()
 
   useEffect(() => {
     async function initialDonHang() {
@@ -107,11 +107,10 @@ function QuanLyDonHang() {
   }
 
   async function saveAll() {
-    for (const donHang of donHangStore.getState().listDonHang) {
-      console.log(JSON.parse(localStorage.getItem(`donHang-${donHang.donHangId}`)))
-
+    for (const donHang of listDonHang) {
       if (donHang._id) {
         await api.put(`/don-hang/${donHang.donHangId}`, { data: JSON.parse(localStorage.getItem(`donHang-${donHang.donHangId}`)) })
+        localStorage.removeItem(`donHang-${donHang.donHangId}`)
         continue
       }
       await api.post('/don-hang', { data: JSON.parse(localStorage.getItem(`donHang-${donHang.donHangId}`)) })

@@ -14,18 +14,4 @@ const useDonHangStore = create((set) => ({
   removeDonHang: (donHangId) => set((state) => ({ listDonHang: state.listDonHang.filter((donHang) => donHang.donHangId !== donHangId) })),
 }))
 
-function getDonHang(id) {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const listDonHang = useDonHangStore((state) => state.listDonHang)
-  return listDonHang.find((donHang) => donHang.donHangId === id)
-}
-
-function getLatestDonHangId() {
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const listDonHang = useDonHangStore((state) => state.listDonHang)
-
-  return String(listDonHang[listDonHang.length - 1].donHangId).split('-')[1]
-}
-
 export default useDonHangStore
-export { getDonHang, getLatestDonHangId }
