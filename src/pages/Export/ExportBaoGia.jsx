@@ -2,27 +2,52 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { formatCurrency } from '#/lib/formatCurrency'
 import { getDateArr } from '#/lib/handleThings'
 
-import logo from '../../../../asset/images/logo.png'
+import logo from '../../../asset/images/logo.png'
 
 import '#/index.css'
-import useDonHangStore from '#/hooks/useDonHangStore'
+import React, { useRef } from 'react'
+import { exportComponentAsPNG } from 'react-component-export-image'
 
 const ExportBaoGia = () => {
+  const componentRef = useRef()
+  const nagigate = useNavigate()
   const { donHangId } = useParams()
-
-  const { listDonHang } = useDonHangStore()
+  return (
+    <>
+      <PrintBaoGia ref={componentRef} />
+      <div className="flex gap-3">
+        <button
+          className="rounded-md bg-slate-600 px-1 font-mono font-bold hover:text-white"
+          onClick={() => nagigate(`../quan-ly-don-hang/don-hang/${donHangId}`, { unstable_viewTransition: { from: 'right' } })}
+        >
+          Quay Về
+        </button>
+        <button
+          className="rounded-md bg-slate-600 px-1 font-mono font-bold hover:text-white"
+          onClick={() =>
+            exportComponentAsPNG(componentRef, {
+              fileName: `baoGia-${donHangId}`,
+              html2CanvasOptions: { allowTaint: true },
+            })
+          }
+        >
+          Xuất Ảnh
+        </button>
+      </div>
+    </>
+  )
+}
+const PrintBaoGia = React.forwardRef(function ExportBaoGia(props, ref) {
+  const { donHangId } = useParams()
   const donHangLoader = JSON.parse(localStorage.getItem(`donHang-${donHangId}`))
 
-  console.log(donHangLoader.listSanPham)
-
   const date = getDateArr()
-  const navigate = useNavigate()
   const totalDonHang = donHangLoader.listSanPham.reduce((acc, sanPham) => acc + sanPham.giaBan * sanPham.soLuong, 0)
 
   return (
-    <div className="m-3 flex flex-col items-center justify-center">
+    <div className="m-3 flex flex-col items-center justify-center" ref={ref}>
       <div className="flex w-[100vw] items-center justify-between ">
-        <div>
+        <div className="px-5">
           <img src={logo} alt="đại lộc logo" className="h-[100px] w-[200px]" />
         </div>
         <div style={{ width: '65%' }}>
@@ -49,7 +74,7 @@ const ExportBaoGia = () => {
       </div>
 
       <div>
-        <table style={{ width: '100vw' }}>
+        <table style={{ width: '90vw' }}>
           <thead>
             <tr>
               <th>STT</th>
@@ -89,6 +114,6 @@ const ExportBaoGia = () => {
       </div>
     </div>
   )
-}
+})
 
 export default ExportBaoGia

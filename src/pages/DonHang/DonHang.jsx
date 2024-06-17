@@ -114,7 +114,7 @@ const DonHang = () => {
           <DonHangButton
             title="Ghi nhận thanh toán"
             handleFunction={() => {
-              setThanhToan(true)
+              setThanhToan((oldState) => !oldState)
               alert('Đã ghi nhận thanh toán')
             }}
           />

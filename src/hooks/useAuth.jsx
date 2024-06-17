@@ -4,17 +4,6 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocalStorage } from './useLocalStorage'
 import axios from 'axios'
-import Dashboard from '#/pages/Dashboard/Dashboard'
-import QuanLyDonHang from '#/pages/QuanLyDonHang/QuanLyDonHang'
-import ExportBaoGia from '#/pages/Export/ExportBaoGia/ExportBaoGia'
-import DonHang from '#/pages/DonHang/DonHang'
-
-export const listProtectedComponent = [
-  { path: '/dashboard', element: <Dashboard /> },
-  { path: '/quan-ly-don-hang', element: <QuanLyDonHang /> },
-  { path: '/export/bao-gia/:donHangId', element: <ExportBaoGia /> },
-  { path: 'quan-ly-don-hang/don-hang/:donHangId', element: <DonHang /> },
-]
 
 const AuthContext = createContext()
 
