@@ -19,10 +19,18 @@ function generateDonHangTemplate(donHangId) {
     soDienThoai: '',
     diaChi: '',
     ngayTaoDon: formattedDate(),
-    thanhToan: false,
+    thanhToan: [],
     ngayThanhToan: null,
     listSanPham: [generateSanPhamTemplate()],
   }
 }
 
-export { generateDonHangTemplate, generateSanPhamTemplate }
+function generateThanhToanLog(soTien, ghiChu) {
+  return {
+    ngayThanhToan: formattedDate(),
+    soTien: soTien || 0,
+    ghiChu: ghiChu,
+  }
+}
+
+export { generateDonHangTemplate, generateSanPhamTemplate, generateThanhToanLog }

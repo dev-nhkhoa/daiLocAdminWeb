@@ -1,3 +1,4 @@
+import { formatCurrency } from '#/lib/formatCurrency'
 import React from 'react'
 
 const CustomerText = ({ title, data }) => {
@@ -23,11 +24,12 @@ const CustomerInfo = React.memo(function CustomerInfo({
   customerPhone,
   customerAddress,
   createdDate,
-  isThanhToan,
+  thanhToan,
   donHangId,
   setCustomerName,
   setCustomerPhone,
   setCustomerAddress,
+  listSanPham,
 }) {
   return (
     <>
@@ -35,8 +37,12 @@ const CustomerInfo = React.memo(function CustomerInfo({
       <CustomerText title="Mã Đơn Hàng" data={donHangId} />
       <div className="flex gap-2">
         <p className="font-mono font-bold">Tình trạng thanh toán:</p>
-        <p className={`${isThanhToan ? ' text-green-700' : 'text-red-400'} font-mono font-bold`}>
-          {isThanhToan ? 'ĐÃ THANH TOÁN' : 'CHƯA THANH TOÁN'}
+        <p className={`font-mono font-bold text-green-700`}>
+          {thanhToan.reduce((acc, curr) => acc + curr.soTien, 0) === 0
+            ? 'Chưa thanh toán'
+            : thanhToan.reduce((acc, curr) => acc + curr.soTien, 0) === listSanPham.reduce((acc, curr) => acc + curr.giaBan * curr.soLuong, 0)
+              ? 'Đã thanh toán đủ'
+              : `Đã thanh toán ${formatCurrency(thanhToan.reduce((acc, curr) => acc + curr.soTien, 0))}đ`}
         </p>
       </div>
       <CustomerInput title="Tên Khách Hàng" data={customerName} input={setCustomerName} />

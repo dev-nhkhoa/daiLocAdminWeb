@@ -4,4 +4,8 @@ function formatCurrency(item) {
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-export { formatCurrency }
+function resetString(item) {
+  return String(item).replace(/,/g, '')
+}
+
+export { formatCurrency, resetString }

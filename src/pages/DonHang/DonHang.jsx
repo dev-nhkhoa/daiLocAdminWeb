@@ -7,6 +7,7 @@ import useDonHangStore from '#/hooks/useDonHangStore'
 import { api } from '#/hooks/useAuth'
 import Table from './Table'
 import CustomerInfo from './CustomerInfo'
+import ThanhToan from '#/components/ThanhToan'
 
 const DonHang = () => {
   const { donHangId } = useParams()
@@ -23,12 +24,14 @@ const DonHang = () => {
       : listDonHang.find((donHang) => donHang.donHangId === donHangId)
   }, [donHangId, listDonHang])
 
+  const createdDate = donHang.ngayTaoDon
   const [customerName, setCustomerName] = useState(donHang.tenKhachHang || '')
   const [customerPhone, setCustomerPhone] = useState(donHang.soDienThoai || '')
   const [customerAddress, setCustomerAddress] = useState(donHang.diaChi || '')
-  const [createdDate, setCreatedDate] = useState(donHang.ngayTaoDon || '')
-  const [isThanhToan, setThanhToan] = useState(donHang.thanhToan || false)
+  const [thanhToanLog, setThanhToanLog] = useState(donHang.thanhToan || [])
   const [listSanPham, setListSanPham] = useState(donHang.listSanPham || [])
+
+  const [isOpenThanhToan, setOpenThanhToan] = useState(false)
 
   useEffect(() => {
     const newDonHang = {
@@ -37,7 +40,7 @@ const DonHang = () => {
       soDienThoai: customerPhone,
       diaChi: customerAddress,
       ngayTaoDon: createdDate,
-      thanhToan: isThanhToan,
+      thanhToan: thanhToanLog,
       listSanPham: listSanPham,
       createdDate: createdDate,
     }
@@ -77,18 +80,20 @@ const DonHang = () => {
 
   return (
     <>
+      {isOpenThanhToan && <ThanhToan closeFunc={setOpenThanhToan} donHang={donHang} handleFunc={setThanhToanLog} listThanhToan={thanhToanLog} />}
       <h1 className="text-left font-mono text-2xl font-bold">Đơn hàng:</h1>
       <div className="flex flex-col gap-1">
         <CustomerInfo
           customerName={customerName}
           customerPhone={customerPhone}
           customerAddress={customerAddress}
-          isThanhToan={isThanhToan}
+          thanhToan={thanhToanLog}
           donHangId={donHangId}
           setCustomerName={setCustomerName}
           setCustomerAddress={setCustomerAddress}
           setCustomerPhone={setCustomerPhone}
           createdDate={createdDate}
+          listSanPham={listSanPham}
         />
       </div>
       <div className="pt-2">
@@ -111,13 +116,7 @@ const DonHang = () => {
 
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <DonHangButton title="Xuất file giao hàng" handleFunction={() => navigate(`../export/giao-hang/${donHang.donHangId}`)} />
-          <DonHangButton
-            title="Ghi nhận thanh toán"
-            handleFunction={() => {
-              setThanhToan((oldState) => !oldState)
-              alert('Đã ghi nhận thanh toán')
-            }}
-          />
+          <DonHangButton title="Ghi nhận thanh toán" handleFunction={() => setOpenThanhToan(true)} />
         </div>
       </div>
     </>

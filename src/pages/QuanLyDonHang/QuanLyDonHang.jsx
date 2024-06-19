@@ -8,8 +8,6 @@ import { api } from '#/hooks/useAuth'
 import useDonHangStore from '#/hooks/useDonHangStore'
 
 function QuanLyDonHang() {
-  // todo: refactor code
-  // public to github
   const navigate = useNavigate()
   const columnHelper = useMemo(() => createColumnHelper(), [])
 
