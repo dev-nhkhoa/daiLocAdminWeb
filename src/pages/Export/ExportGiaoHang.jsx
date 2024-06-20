@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { formatCurrency } from '#/lib/formatCurrency'
+import { formatCurrency, resetString } from '#/lib/formatCurrency'
 import { getDateArr } from '#/lib/handleThings'
 
 import logo from '../../../asset/images/logo.png'
@@ -11,7 +11,10 @@ const ExportGiaoHang = () => {
   const donHangLoader = JSON.parse(localStorage.getItem(`donHang-${donHangId}`))
 
   const date = getDateArr()
-  const totalDonHang = donHangLoader.listSanPham.reduce((acc, sanPham) => acc + sanPham.giaBan * sanPham.soLuong, 0)
+  const totalDonHang = donHangLoader.listSanPham.reduce(
+    (acc, sanPham) => acc + parseFloat(resetString(sanPham.giaBan)) * parseFloat(resetString(sanPham.soLuong)),
+    0
+  )
 
   return (
     <div className="m-3 flex flex-col items-center justify-center">
@@ -61,9 +64,9 @@ const ExportGiaoHang = () => {
                 <td>{index + 1}</td>
                 <td style={{ textAlign: 'left' }}>{sanPham.tenHangHoa}</td>
                 <td>{sanPham.donVi}</td>
-                <td>{formatCurrency(sanPham.giaBan)}</td>
+                <td>{formatCurrency(resetString(sanPham.giaBan))}</td>
                 <td>{sanPham.soLuong}</td>
-                <td>{formatCurrency(sanPham.giaBan * sanPham.soLuong)}</td>
+                <td>{formatCurrency(resetString(sanPham.giaBan) * resetString(sanPham.soLuong))}</td>
                 <td>{sanPham.ghiChu}</td>
               </tr>
             ))}
