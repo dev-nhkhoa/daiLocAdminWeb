@@ -1,5 +1,7 @@
 import { formatCurrency } from '#/lib/formatCurrency'
-import React from 'react'
+import React, { useState } from 'react'
+import DonHangButton from './DonHangButton'
+import Modal from '#/components/Modal'
 
 const CustomerText = ({ title, data }) => {
   return (
@@ -24,6 +26,7 @@ const CustomerInfo = React.memo(function CustomerInfo({
   customerPhone,
   customerAddress,
   createdDate,
+  setCreatedDate,
   thanhToan,
   donHangId,
   setCustomerName,
@@ -31,9 +34,39 @@ const CustomerInfo = React.memo(function CustomerInfo({
   setCustomerAddress,
   listSanPham,
 }) {
+  const [date, setDate] = useState()
+  const [isEditDate, setEditDate] = useState(false)
+
+  function saveDate() {
+    console.log(date)
+    if (date == undefined) {
+      alert('Vui lòng chọn ngày tạo đơn')
+      return
+    }
+    const newDate = date.split('T')
+    const dayMonthYear = newDate[0].split('-').reverse().join('-')
+    const hourMinute = newDate[1]
+
+    const editedDate = `${hourMinute} ${dayMonthYear}`
+
+    setCreatedDate(editedDate)
+    alert('Đã lưu ngày tạo đơn')
+  }
+
   return (
     <>
-      <CustomerText title="Ngày Tạo Đơn" data={createdDate} />
+      {isEditDate && (
+        <Modal>
+          <p className="font-mono font-bold">Chỉnh sửa ngày tạo đơn</p>
+          <input type="datetime-local" onChange={(e) => setDate(e.target.value)} />
+          <DonHangButton title="Lưu" handleFunction={saveDate} />
+          <DonHangButton title="Đóng" handleFunction={() => setEditDate(false)} />
+        </Modal>
+      )}
+      <div className="flex items-center gap-2">
+        <CustomerText title="Ngày Tạo Đơn" data={createdDate} />
+        <DonHangButton title="chỉnh sửa" handleFunction={() => setEditDate(true)} />
+      </div>
       <CustomerText title="Mã Đơn Hàng" data={donHangId} />
       <div className="flex gap-2">
         <p className="font-mono font-bold">Tình trạng thanh toán:</p>

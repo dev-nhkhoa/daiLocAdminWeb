@@ -20,10 +20,16 @@ export const AuthProvider = ({ children }) => {
         const wakeUp = await api.get('/')
         if (wakeUp.status === 200) {
           console.log('API is running!')
-          localStorage.clear()
+          for (let i = 0; i < localStorage.length; i++) {
+            if (localStorage.key(i).includes('donHang')) {
+              console.log(localStorage.key(i))
+              localStorage.removeItem(localStorage.key(i))
+            }
+          }
           setWakeUp(true)
         }
       } catch (error) {
+        console.log(error)
         alert('API is not running!')
       }
     }

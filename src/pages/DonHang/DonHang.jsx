@@ -24,7 +24,7 @@ const DonHang = () => {
       : listDonHang.find((donHang) => donHang.donHangId === donHangId)
   }, [donHangId, listDonHang])
 
-  const createdDate = donHang.ngayTaoDon
+  const [createdDate, setCreatedDate] = useState(donHang.ngayTaoDon)
   const [customerName, setCustomerName] = useState(donHang.tenKhachHang || '')
   const [customerPhone, setCustomerPhone] = useState(donHang.soDienThoai || '')
   const [customerAddress, setCustomerAddress] = useState(donHang.diaChi || '')
@@ -93,6 +93,7 @@ const DonHang = () => {
           setCustomerAddress={setCustomerAddress}
           setCustomerPhone={setCustomerPhone}
           createdDate={createdDate}
+          setCreatedDate={setCreatedDate}
           listSanPham={listSanPham}
         />
       </div>

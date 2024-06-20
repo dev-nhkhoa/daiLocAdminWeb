@@ -4,6 +4,7 @@ import DonHangButton from '#/pages/DonHang/DonHangButton'
 import { formatCurrency, resetString } from '#/lib/formatCurrency'
 import { generateThanhToanLog } from '#/lib/generateTemplate'
 import useDonHangStore from '#/hooks/useDonHangStore'
+import Modal from './Modal'
 
 function ThanhToanLog({ listThanhToan, handleFunc, closeFunc }) {
   return (
@@ -92,38 +93,34 @@ function ThanhToan({ closeFunc, donHang, handleFunc, listThanhToan }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="flex w-full max-w-md flex-col gap-1 rounded bg-white p-8 shadow-lg">
-        <p className="font-mono font-bold">Thanh toán</p>
-        <div className="mt-4 flex justify-center gap-3">
-          <p>Nhập số tiền:</p>
-          <input placeholder="1.000.000đ" className="border-black" onChange={(e) => setMoney(e.target.value)} value={formatCurrency(money)} />
-        </div>
-        <div className="mt-auto flex gap-2 self-end">
-          {!isNaN(total) ? (
-            <>
-              {total - donHang.thanhToan.reduce((acc, curr) => acc + curr.soTien, 0) > 0 && (
-                <>
-                  <DonHangButton title="Ghi nhận thanh toán" handleFunction={() => thanhToanFunc()} />
-                  <DonHangButton title="Xác nhận Thanh toán đủ" handleFunction={() => thanhToanAllFunc()} />
-                </>
-              )}
-            </>
-          ) : (
-            <p className="text-black">Vui lòng điền kiểm tra lại thông tin</p>
-          )}
-          <DonHangButton title="Xóa thanh toán" handleFunction={() => setOpenLog(true)} />
-          <DonHangButton title="Đóng" handleFunction={() => closeFunc(false)} />
-        </div>
-        {isOpenLog && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="rounded bg-white p-8 shadow-lg">
-              <ThanhToanLog listThanhToan={listThanhToan} closeFunc={setOpenLog} handleFunc={handleFunc} />
-            </div>
-          </div>
-        )}
+    <Modal>
+      <p className="font-mono font-bold">Thanh toán</p>
+      <div className="mt-4 flex justify-center gap-3">
+        <p>Nhập số tiền:</p>
+        <input placeholder="1.000.000đ" className="border-black" onChange={(e) => setMoney(e.target.value)} value={formatCurrency(money)} />
       </div>
-    </div>
+      <div className="mt-auto flex gap-2 self-end">
+        {!isNaN(total) ? (
+          <>
+            {total - donHang.thanhToan.reduce((acc, curr) => acc + curr.soTien, 0) > 0 && (
+              <>
+                <DonHangButton title="Ghi nhận thanh toán" handleFunction={() => thanhToanFunc()} />
+                <DonHangButton title="Xác nhận Thanh toán đủ" handleFunction={() => thanhToanAllFunc()} />
+              </>
+            )}
+          </>
+        ) : (
+          <p className="text-black">Vui lòng điền kiểm tra lại thông tin</p>
+        )}
+        <DonHangButton title="Xóa thanh toán" handleFunction={() => setOpenLog(true)} />
+        <DonHangButton title="Đóng" handleFunction={() => closeFunc(false)} />
+      </div>
+      {isOpenLog && (
+        <Modal>
+          <ThanhToanLog listThanhToan={listThanhToan} closeFunc={setOpenLog} handleFunc={handleFunc} />
+        </Modal>
+      )}
+    </Modal>
   )
 }
 
