@@ -11,9 +11,11 @@ import QuanLyDonHang from './pages/QuanLyDonHang/QuanLyDonHang'
 import ExportBaoGia from './pages/Export/ExportBaoGia'
 import ExportGiaoHang from './pages/Export/ExportGiaoHang'
 import DonHang from './pages/DonHang/DonHang'
+import Settings from './pages/Settings/Settings'
 
 const listProtectedComponent = [
   { path: '/dashboard', element: <PageTemplate body={<Dashboard />} /> },
+  { path: '/settings', element: <PageTemplate body={<Settings />} /> },
   { path: '/quan-ly-don-hang', element: <PageTemplate body={<QuanLyDonHang />} /> },
   { path: '/export/bao-gia/:donHangId', element: <PageTemplate body={<ExportBaoGia />} /> },
   { path: '/export/giao-hang/:donHangId', element: <ExportGiaoHang /> },
@@ -21,6 +23,8 @@ const listProtectedComponent = [
 ]
 
 ReactDOM.createRoot(document.getElementById('root')).render(
+  // todo:
+  // - thống kê đơn giản
   <BrowserRouter>
     <AuthProvider>
       <Routes>
