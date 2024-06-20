@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
         const wakeUp = await api.get('/')
         if (wakeUp.status === 200) {
           console.log('API is running!')
+          localStorage.clear()
           setWakeUp(true)
         }
       } catch (error) {
