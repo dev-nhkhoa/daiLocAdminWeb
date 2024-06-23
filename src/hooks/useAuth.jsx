@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLocalStorage } from './useLocalStorage'
 import axios from 'axios'
+import useDonHangStore from './useDonHangStore'
+import { generateDonHangTemplate } from '#/lib/generateTemplate'
 
 const AuthContext = createContext()
 
@@ -13,6 +15,8 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const [user, setUser] = useLocalStorage('user', null)
   const [isWakeUp, setWakeUp] = useState(false)
+
+  const { listDonHang, setListDonHang } = useDonHangStore()
 
   useEffect(() => {
     async function apiWakeUp() {
@@ -35,6 +39,25 @@ export const AuthProvider = ({ children }) => {
     }
     apiWakeUp()
   }, [])
+
+  useEffect(() => {
+    async function initialDonHang() {
+      try {
+        if (listDonHang.length > 0) return
+        const response = await api.get('/danh-sach-don-hang')
+        if (response.data.length === 0) {
+          const template = generateDonHangTemplate(0)
+          setListDonHang([template])
+          localStorage.setItem(`donHang-${template.donHangId}`, JSON.stringify(template))
+          return
+        }
+        setListDonHang(response.data)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    initialDonHang()
+  }, [listDonHang.length, setListDonHang])
 
   useEffect(() => {
     if (user) {

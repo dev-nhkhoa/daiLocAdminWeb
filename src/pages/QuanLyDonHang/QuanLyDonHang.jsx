@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { tableMainRow } from '../../config.json'
 import DefaultColumn from './DefaultColumn'
 import { generateDonHangTemplate } from '#/lib/generateTemplate'
@@ -11,26 +11,7 @@ function QuanLyDonHang() {
   const navigate = useNavigate()
   const columnHelper = useMemo(() => createColumnHelper(), [])
 
-  const { listDonHang, setListDonHang, removeDonHang, addDonHang } = useDonHangStore()
-
-  useEffect(() => {
-    async function initialDonHang() {
-      try {
-        if (listDonHang.length > 0) return
-        const response = await api.get('/danh-sach-don-hang')
-        if (response.data.length === 0) {
-          const template = generateDonHangTemplate(0)
-          setListDonHang([template])
-          localStorage.setItem(`donHang-${template.donHangId}`, JSON.stringify(template))
-          return
-        }
-        setListDonHang(response.data)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    initialDonHang()
-  }, [listDonHang.length, setListDonHang])
+  const { listDonHang, removeDonHang, addDonHang } = useDonHangStore()
 
   const defaultColumn = useMemo(
     () =>
