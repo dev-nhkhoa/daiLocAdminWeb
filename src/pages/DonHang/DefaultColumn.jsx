@@ -12,23 +12,25 @@ const DefaultColumn = (props) => {
 
   const newGiaBan = removeComma(giaBan)
   const newGiaNhap = removeComma(giaNhap)
-  const newSoLuong = removeComma(soLuong)
+  const newSoLuong = parseFloat(String(soLuong).replace(/,/g, '.'))
 
   const convertData = (column) => {
     switch (column.id) {
       case 'stt':
         return row.index + 1
       case 'giaNhap':
+        console.log(newGiaNhap)
+        return formatCurrency(newGiaNhap)
       case 'giaBan':
-      case 'loLuong':
-        if (String(getValue()).includes(',')) return formatCurrency(String(getValue()).replace(/,/g, ''))
-        return formatCurrency(getValue())
+        return formatCurrency(newGiaBan)
+      case 'soLuong':
+        return parseFloat(String(getValue()).replace(/,/g, '.'))
       case 'thanhTienBanHang':
-        return formatCurrency(newGiaBan * newSoLuong)
+        return formatCurrency(Math.round(parseFloat(newGiaBan) * parseFloat(newSoLuong)))
       case 'thanhTienNhapHang':
-        return formatCurrency(newGiaNhap * newSoLuong)
+        return formatCurrency(Math.round(parseFloat(newGiaNhap) * parseFloat(newSoLuong)))
       case 'loiNhuan':
-        return formatCurrency(newGiaBan * newSoLuong - newGiaNhap * newSoLuong)
+        return formatCurrency(Math.round(parseFloat(newGiaBan) * parseFloat(newSoLuong) - parseFloat(newGiaNhap) * parseFloat(newSoLuong)))
       case 'thanhToan':
         return getValue() ? 'Đã thanh toán' : 'Chưa thanh toán'
     }

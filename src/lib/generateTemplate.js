@@ -20,7 +20,6 @@ function generateDonHangTemplate(donHangId) {
     diaChi: '',
     ngayTaoDon: formattedDate(),
     thanhToan: [],
-    ngayThanhToan: null,
     listSanPham: [generateSanPhamTemplate()],
   }
 }

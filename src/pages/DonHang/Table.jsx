@@ -6,6 +6,7 @@ import DefaultColumn from './DefaultColumn'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { tableHeaderRow } from '../../config.json'
 import { CSS } from '@dnd-kit/utilities'
+import { resetString } from '#/lib/formatCurrency'
 
 const DraggableRow = React.memo(function DraggableRow({ row }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
@@ -129,11 +130,11 @@ const Table = React.memo(function Table({ listSanPham, setListSanPham }) {
 
   const calculateTotal = useCallback(() => {
     const thanhTienBanHang = listSanPham.reduce((total, sanPham) => {
-      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(sanPham.giaBan) * parseFloat(sanPham.soLuong)
+      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(resetString(sanPham.giaBan)) * parseFloat(sanPham.soLuong)
     }, 0)
 
     const thanhTienNhapHang = listSanPham.reduce((total, sanPham) => {
-      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(sanPham.giaNhap) * parseFloat(sanPham.soLuong)
+      return sanPham.giaBan == '' || sanPham.soLuong == '' ? total : total + parseFloat(resetString(sanPham.giaNhap)) * parseFloat(sanPham.soLuong)
     }, 0)
 
     const loiNhuan = parseFloat(thanhTienBanHang) - parseFloat(thanhTienNhapHang)

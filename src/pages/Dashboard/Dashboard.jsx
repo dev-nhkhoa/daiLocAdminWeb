@@ -19,8 +19,9 @@ const Dashboard = () => {
 
     let profitList = []
     for (let i = 0; i < 12; i++) {
-      const startDate = new Date(yearNow, i, 1).toISOString().split('T')[0]
-      const endDate = new Date(yearNow, i + 1, 0).toISOString().split('T')[0]
+      const startDate = new Date(yearNow, i, 0).toISOString().split('T')[0]
+      const endDate = new Date(yearNow, i + 1, 1).toISOString().split('T')[0]
+
       profitList.push(calcProfit(listDonHang, startDate, endDate))
     }
     return profitList
@@ -68,7 +69,7 @@ const Dashboard = () => {
             <PieChart chartData={chartData} title="Thanh toán" />
           </div>
           <div className="max-w[250px] flex max-h-[250px] flex-col items-center justify-center">
-            <p>Lợi nhuận ước tính: {formatCurrency(calcProfit(listDonHang, startDate, endDate))}đ</p>
+            <p>Lợi nhuận ước tính: {formatCurrency(Math.round(calcProfit(listDonHang, startDate, endDate)))}đ</p>
             <LineChart option={option} chartData={profitList} title="Lợi nhuận trong Năm" />
           </div>
         </div>

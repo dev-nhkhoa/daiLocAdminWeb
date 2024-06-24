@@ -44,7 +44,7 @@ const CustomerInfo = React.memo(function CustomerInfo({
       return
     }
     const newDate = date.split('T')
-    const dayMonthYear = newDate[0].split('-').reverse().join('-')
+    const dayMonthYear = newDate[0].split('-').reverse().join('/')
     const hourMinute = newDate[1]
 
     const editedDate = `${hourMinute} ${dayMonthYear}`

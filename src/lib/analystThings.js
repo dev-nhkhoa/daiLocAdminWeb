@@ -11,14 +11,13 @@ function calcProfit(listDonHang, startDate, endDate) {
     if (!(parseFloat(createdDate) >= parseFloat(startDateObj) && parseFloat(createdDate) <= parseFloat(endDateObj))) return acc
     return (
       acc +
-      (acc +
-        donHang.listSanPham.reduce((acc, sanPham) => {
-          return (
-            acc +
-            (parseFloat(resetString(sanPham.giaBan)) * parseFloat(resetString(sanPham.soLuong)) -
-              parseFloat(resetString(sanPham.giaNhap)) * parseFloat(resetString(sanPham.soLuong)))
-          )
-        }, 0))
+      donHang.listSanPham.reduce((acc, sanPham) => {
+        return (
+          acc +
+          (parseFloat(resetString(sanPham.giaBan)) * parseFloat(resetString(sanPham.soLuong)) -
+            parseFloat(resetString(sanPham.giaNhap)) * parseFloat(resetString(sanPham.soLuong)))
+        )
+      }, 0)
     )
   }, 0)
 }
