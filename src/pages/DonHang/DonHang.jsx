@@ -4,14 +4,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import DonHangButton from './DonHangButton'
 import { generateSanPhamTemplate } from '#/lib/generateTemplate'
 import useDonHangStore from '#/hooks/useDonHangStore'
-import { api } from '#/hooks/useAuth'
+import { api, useAuth } from '#/hooks/useAuth'
 import Table from './Table'
 import CustomerInfo from './CustomerInfo'
 import ThanhToan from '#/components/ThanhToan'
 
 const DonHang = () => {
-  const { donHangId } = useParams()
   const navigate = useNavigate()
+  const { update } = useAuth()
+  const { donHangId } = useParams()
 
   const { updateListDonHang } = useDonHangStore()
   const listDonHang = useDonHangStore((state) => state.listDonHang)
@@ -34,6 +35,7 @@ const DonHang = () => {
   const [isOpenThanhToan, setOpenThanhToan] = useState(false)
 
   useEffect(() => {
+    console.log(createdDate)
     const newDonHang = {
       ...donHang,
       tenKhachHang: customerName,
@@ -67,14 +69,35 @@ const DonHang = () => {
 
     try {
       if (dbList.data.filter((item) => item.donHangId === donHangId).length > 0) {
-        await api.put(`/don-hang/${donHangId}`, { data: donHang })
+        await api.put(`/don-hang/${donHangId}`, {
+          data: {
+            ...donHang,
+            tenKhachHang: customerName,
+            soDienThoai: customerPhone,
+            diaChi: customerAddress,
+            ngayTaoDon: createdDate,
+            thanhToan: thanhToanLog,
+            listSanPham: listSanPham,
+          },
+        })
       } else {
-        await api.post('/don-hang', { data: donHang })
+        await api.post('/don-hang', {
+          data: {
+            ...donHang,
+            tenKhachHang: customerName,
+            soDienThoai: customerPhone,
+            diaChi: customerAddress,
+            ngayTaoDon: createdDate,
+            thanhToan: thanhToanLog,
+            listSanPham: listSanPham,
+          },
+        })
       }
       alert('Lưu thành công')
     } catch (error) {
       console.log(error)
     }
+    update()
     localStorage.removeItem(`donHang-${donHangId}`)
   }
 

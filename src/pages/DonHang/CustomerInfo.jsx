@@ -38,7 +38,6 @@ const CustomerInfo = React.memo(function CustomerInfo({
   const [isEditDate, setEditDate] = useState(false)
 
   function saveDate() {
-    console.log(date)
     if (date == undefined) {
       alert('Vui lòng chọn ngày tạo đơn')
       return
@@ -51,6 +50,7 @@ const CustomerInfo = React.memo(function CustomerInfo({
 
     setCreatedDate(editedDate)
     alert('Đã lưu ngày tạo đơn')
+    setEditDate(false)
   }
 
   return (

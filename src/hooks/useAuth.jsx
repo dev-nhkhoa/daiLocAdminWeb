@@ -18,6 +18,17 @@ export const AuthProvider = ({ children }) => {
 
   const { listDonHang, setListDonHang } = useDonHangStore()
 
+  async function update() {
+    const response = await api.get('/danh-sach-don-hang')
+    if (response.data.length === 0) {
+      const template = generateDonHangTemplate(0)
+      setListDonHang([template])
+      localStorage.setItem(`donHang-${template.donHangId}`, JSON.stringify(template))
+      return
+    }
+    setListDonHang(response.data)
+  }
+
   useEffect(() => {
     async function apiWakeUp() {
       try {
@@ -44,14 +55,7 @@ export const AuthProvider = ({ children }) => {
     async function initialDonHang() {
       try {
         if (listDonHang.length > 0) return
-        const response = await api.get('/danh-sach-don-hang')
-        if (response.data.length === 0) {
-          const template = generateDonHangTemplate(0)
-          setListDonHang([template])
-          localStorage.setItem(`donHang-${template.donHangId}`, JSON.stringify(template))
-          return
-        }
-        setListDonHang(response.data)
+        await update()
       } catch (error) {
         console.error(error)
       }
@@ -75,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     navigate('/', { replace: true })
   }
 
-  const value = useMemo(() => ({ user, login, logout }), [login, logout, user])
+  const value = useMemo(() => ({ user, login, logout, update }), [login, logout, user])
   return <AuthContext.Provider value={value}>{isWakeUp ? <>{children}</> : <p>Đang kết nối api...</p>}</AuthContext.Provider>
 }
 
